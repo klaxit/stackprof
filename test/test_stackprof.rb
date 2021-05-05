@@ -61,7 +61,12 @@ class StackProfTest < MiniTest::Test
     if RUBY_VERSION >= '3'
       assert_equal [4, 0], frame[:lines][profile_base_line]
     else
-      assert_equal [2, 0], frame[:lines][profile_base_line]
+      begin
+        assert_equal [2, 0], frame[:lines][profile_base_line]
+      rescue
+        p frame[:lines]
+        raise
+      end
     end
   end
 
@@ -80,7 +85,12 @@ class StackProfTest < MiniTest::Test
     assert_operator profile[:samples], :>=, 1
     offset = RUBY_VERSION >= '3' ? 1 : 0
     frame = profile[:frames].values[offset]
-    assert_includes frame[:name], "StackProfTest#math"
+    begin
+      assert_includes frame[:name], "StackProfTest#math"
+    rescue
+      p frame
+      raise
+    end
   end
 
   def test_walltime
@@ -205,7 +215,6 @@ class StackProfTest < MiniTest::Test
       end
     end
 
-    raw = profile[:raw]
     gc_frame = profile[:frames].values.find{ |f| f[:name] == "(garbage collection)" }
     marking_frame = profile[:frames].values.find{ |f| f[:name] == "(marking)" }
     sweeping_frame = profile[:frames].values.find{ |f| f[:name] == "(sweeping)" }
