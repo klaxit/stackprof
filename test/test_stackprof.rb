@@ -83,14 +83,9 @@ class StackProfTest < MiniTest::Test
     end
 
     assert_operator profile[:samples], :>=, 1
-    offset = RUBY_VERSION >= '3' ? 1 : 0
-    frame = profile[:frames].values[offset]
-    begin
-      assert_includes frame[:name], "StackProfTest#math"
-    rescue Exception => e
-      p frame
-      raise e
-    end
+    frame_names = profile[:frames].values.map { |x| x[:name] }
+
+    assert_includes frame_names, "StackProfTest#math"
   end
 
   def test_walltime
