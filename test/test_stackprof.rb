@@ -63,9 +63,9 @@ class StackProfTest < MiniTest::Test
     else
       begin
         assert_equal [2, 0], frame[:lines][profile_base_line]
-      rescue
+      rescue Exception => e
         p frame[:lines]
-        raise
+        raise e
       end
     end
   end
@@ -87,9 +87,9 @@ class StackProfTest < MiniTest::Test
     frame = profile[:frames].values[offset]
     begin
       assert_includes frame[:name], "StackProfTest#math"
-    rescue
+    rescue Exception => e
       p frame
-      raise
+      raise e
     end
   end
 
